@@ -1,13 +1,17 @@
 "FUNCTION GO TO LINE HELPER FOR SHOW RESULTS:
 function! searcher#GetLine(worig,file,wscratch)
+	""woring - original window number
+	""wscratch - scratch buffer window number
+	""Extract number from line
 	let l:pattl=':\d\{-}:'
 	let l:line=getline('.')
 	let l:matchl=matchstr(l:line,l:pattl)
 	let l:matchl=substitute(l:matchl,':','','')
-
+	""Extract filename
 	let l:pattf='^.\{-}:'
 	let l:matchf=matchstr(l:line,l:pattf)
 	let l:matchf=substitute(l:matchf,':$','','')
+	""Go to original window number and open file containing searched string
 	exe a:worig . "wincmd w"
 	exe 'silent e' l:matchf
 	exe l:matchl
@@ -16,7 +20,7 @@ endfunction
 
 ""SHOW RESULT IN SPLIT WINDOW BUFFER:
 function! searcher#ShowResults(lst,concealfname,patt)
-	"Prepare scratch buffer
+	"Prepare scratch buffer with matching files
 	let l:lenlst=len(a:lst)
 	let l:lenlst = (l:lenlst>15) ? 15 : l:lenlst
 	let l:bufnr=bufnr("%")
@@ -24,9 +28,9 @@ function! searcher#ShowResults(lst,concealfname,patt)
 	silent call buffer#GoToScratch('searched',l:lenlst)
 	let l:wscratch=winnr()
 	set ma
-	%d_
+	normal! %d_
 	0put = a:lst
-	1
+	normal! 1
 	set noma
 	"
 	"HIGHLIGH RESULT"
@@ -37,7 +41,6 @@ function! searcher#ShowResults(lst,concealfname,patt)
 	let l:mcommand='syn match ' . l:hname . ' ' . shellescape(a:patt)
 	exe l:hicommand
 	exe l:mcommand
-	
 	"File path
 	let l:patt='^.\{-}\ze:'
 	let l:hname="searcherGrepDirHL2"
@@ -88,14 +91,15 @@ endfunction
 command! -nargs=1 SearcherGrepBuffer call searcher#GrepBuffer(<q-args>)
 
 ""GREP SPECIFIED DIRECTORIES:
-function! searcher#GrepDirs(patt,dirs)
-	let l:bashc='find ' . a:dirs  . ' -type f -exec grep ' . a:patt . ' -nH -A 1 {} \;'
+function! searcher#GrepDir(patt,dir)
+	let l:bashc='find ' . a:dir  . ' -type f -exec grep ' . a:patt . ' -nH -A 1 {} \;'
 	let l:list=systemlist(l:bashc)
 	call filter(l:list, 'v:val !~ "Binary file"')
 	let l:patt='^' . $HOME
 	let l:list=array#ListSubstitute(l:list,l:patt,'~','g')
 	return l:list
 endfunction
+command! -nargs=* SearcherGrepDir call searcher#GrepDir(<f-args>)
 
 ""GREP NOTES:
 function! searcher#GrepNotes(patt)
