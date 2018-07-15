@@ -104,7 +104,7 @@ command! -nargs=* SearcherGrepDir call searcher#GrepDir(<f-args>)
 ""GREP NOTES:
 function! searcher#GrepNotes(patt)
 	let l:dir=$HOME . '/Notes/'
-	let l:list=searcher#GrepDirs(a:patt,l:dir)
+	let l:list=searcher#GrepDir(a:patt,l:dir)
 	call searcher#ShowResults(l:list,'yes',a:patt)
 endfunction
 command! -nargs=1 SearcherGrepNotes call searcher#GrepNotes(<q-args>)
@@ -113,7 +113,7 @@ command! -nargs=1 SearcherGrepNotes call searcher#GrepNotes(<q-args>)
 ""GREP Scripts:
 function! searcher#GrepScripts(patt)
 	let l:dir=$HOME . '/Scripts/'
-	let l:list=searcher#GrepDirs(a:patt,l:dir)
+	let l:list=searcher#GrepDir(a:patt,l:dir)
 	call searcher#ShowResults(l:list,'yes',a:patt)
 endfunction
 command! -nargs=1 SearcherGrepScripts call searcher#GrepScripts(<q-args>)
