@@ -92,7 +92,7 @@ command! -nargs=1 SearcherGrepBuffer call searcher#GrepBuffer(<q-args>)
 
 ""GREP SPECIFIED DIRECTORIES:
 function! searcher#GrepDir(patt,dir)
-	let l:bashc='find ' . a:dir  . ' -type f -exec grep ' . a:patt . ' -nH -A 1 {} \;'
+	let l:bashc='find ' . a:dir  . ' -type f -exec grep ' . a:patt . ' -nH -A 0 {} \;'
 	let l:list=systemlist(l:bashc)
 	call filter(l:list, 'v:val !~ "Binary file"')
 	let l:patt='^' . $HOME
