@@ -27,11 +27,9 @@ function! searcher#ShowResults(lst,concealfname,patt)
 	let l:worig=winnr()
 	silent call buffer#GoToScratch('searched',l:lenlst)
 	let l:wscratch=winnr()
-	set ma
 	normal! %d_
 	0put = a:lst
 	normal! 1
-	set noma
 	"
 	"HIGHLIGH RESULT"
 	syn clear
