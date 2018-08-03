@@ -15,6 +15,7 @@ function! searcher#GetLine(worig,file,wscratch)
 	exe a:worig . "wincmd w"
 	exe 'silent e' l:matchf
 	exe l:matchl
+	normal! zt
 	exe a:wscratch . "wincmd w"
 endfunction
 
