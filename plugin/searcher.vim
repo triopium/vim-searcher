@@ -117,3 +117,61 @@ function! searcher#GrepScripts(patt)
 endfunction
 command! -nargs=1 SearcherGrepScripts call searcher#GrepScripts(<q-args>)
 ""echo searcher#GrepScripts('func')
+
+""FIND FILES:
+function! searcher#FindFiles(...)
+	let l:dir=$HOME . '/Notes/'
+	"path switch
+	let l:p=0 
+	let l:pa=""
+	"string switch
+	let l:s=0
+	let l:str=""
+	for l:i in a:000
+		"" Get switches
+		if l:i=="+s"
+			let l:s=1
+			continue
+		endif
+		if l:i=="-s"
+			let l:s=-1
+			continue
+		endif
+		if l:i=="+p"
+			let l:p=1
+			continue
+		endif
+		if l:i=="-p"
+			let l:p=-1
+			continue
+		endif
+		
+		"" Construct command according to switches values
+		if l:p==1
+			let l:pa.=" -path *" . l:i . "*"
+		endif
+		if l:p==-1
+			let l:pa.=" ! -path *" . l:i . "*"
+		endif
+		if l:s==1
+			let l:str.=" -iname *" . l:i . "*"
+		endif
+		if l:s==-1
+			let l:str.=" ! -iname *" . l:i . "*"
+		endif
+
+	endfor
+	let l:stra='\( ' . l:str . ' \)'
+	"let l:bashc='find . -type f ' . l:stra . " " . l:pa
+	let l:bashc='find ' . l:dir . ' -type f ' . l:stra . " " . l:pa
+	echo l:bashc
+	
+	""Display results
+	let l:list=systemlist(l:bashc)
+	call filter(l:list, 'v:val !~ "Binary file"')
+	let l:patt='^' . $HOME
+	let l:list=array#ListSubstitute(l:list,l:patt,'~','g')
+	call searcher#ShowResults(l:list,'yes',l:patt)
+endfunction
+command! -nargs=+ FF  call searcher#FindFiles(<f-args>)
+
